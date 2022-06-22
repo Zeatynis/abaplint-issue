@@ -1,0 +1,27 @@
+{
+    "input_filter": [
+        ".clas\\.abap",
+        ".intf\\.abap",
+        ".dtel\\.xml",
+        ".doma\\.xml"
+    ],
+    "input_folder": "src",
+    "libs": [
+        {
+            "url": "https://git.hicron.com/abap/rest-engine"
+        },
+        {
+            "url": "https://github.com/open-abap/open-abap"
+        }
+    ],
+    "options": {
+        "addCommonJS": true,
+        "addFilenames": true,
+        "ignoreSyntaxCheck": true,
+        "skip": [],
+        "unknownTypes": "runtimeError"
+    },
+    "output_folder": "output",
+    "write_source_map": true,
+    "write_unit_tests": true
+}

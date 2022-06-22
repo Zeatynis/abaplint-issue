@@ -16,7 +16,7 @@
             ".*R_XSD_TO_WSDL",
             ",*_VIEWS"
         ],
-        "files": "/src/**/*.*",
+        "files": "/downport/**/*.*",
         "skipGeneratedFunctionGroups": true,
         "skipGeneratedGatewayClasses": true,
         "skipGeneratedPersistentClasses": true,
@@ -121,7 +121,7 @@
             "severity": "Error",
             "updateDatabase": true
         },
-        "check_syntax": true,
+        "check_syntax": false,
         "check_text_elements": {
             "exclude": [],
             "severity": "Error"
@@ -418,7 +418,9 @@
             "severity": "Error"
         },
         "implement_methods": {
-            "exclude": [],
+            "exclude": [
+                "CX_.*abap"
+            ],
             "severity": "Error"
         },
         "in_statement_indentation": {
@@ -839,7 +841,7 @@
         }
     },
     "syntax": {
-        "errorNamespace": ".",
+        "errorNamespace": "^(/HCR/|Z|Y|LCL_|TY_|LIF_)",
         "globalConstants": [],
         "globalMacros": [],
         "version": "v702"

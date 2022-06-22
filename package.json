@@ -1,0 +1,19 @@
+{
+    "devDependencies": {
+        "@abaplint/cli": "^2.90.10",
+        "@abaplint/runtime": "^2.0.29",
+        "@abaplint/transpiler-cli": "^2.0.29"
+    },
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://git.hicron.com/abap/ksef/ksef.git"
+    },
+    "scripts": {
+        "abaplint": "abaplint --format codeframe",
+        "test": "npm run downport && npm run unit",
+        "unit": "rm -rf output && abap_transpile abap_transpile.json && echo RUNNING && node output/index.mjs",
+        "downport": "rm -rf downport && cp src -r downport && abaplint --fix abaplint_downport.json"
+    }
+}

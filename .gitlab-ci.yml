@@ -1,0 +1,57 @@
+abaplint_commit_only:
+    image: abaplint/abaplint
+    stage: test
+    variables:
+        http_proxy: http://10.5.1.1:8080
+        https_proxy: http://10.5.1.1:8080
+    rules:
+        - if: $CI_COMMIT_SHA != null && $CI_PIPELINE_SOURCE != "web"
+        - when: never
+    script:
+        - git diff-tree --no-commit-id --name-only -r $CI_MERGE_REQUEST_TARGET_BRANCH_SHA -r $CI_COMMIT_SHA > commited.txt
+        - git ls-files > files.txt
+        - grep -Fvxf commited.txt files.txt > exclude.txt
+        - sed -e 's/^/"/' -e 's/$/"/' -e '$!s/$/,/' exclude.txt > exclude_final.txt
+        - apk update && apk add wget
+        - wget -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+        - chmod +x jq-linux64
+        - sed -f sed_pattern_noissues abaplint.json | ./jq-linux64 . > abaplint_commited.json
+        - git config --global url."https://KSEF:${CI_JOB_TOKEN}@git.hicron.com".insteadOf https://git.hicron.com
+        - abaplint abaplint_commited.json --outformat junit --outfile report_commit.xml
+    artifacts:
+        reports:
+            junit: report_commit.xml
+abaplint:
+    image: abaplint/abaplint
+    stage: test
+    variables:
+        http_proxy: http://10.5.1.1:8080
+        https_proxy: http://10.5.1.1:8080
+
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "web"
+        - when: never
+    before_script:
+        - git config --global url."https://KSEF:${CI_JOB_TOKEN}@git.hicron.com/".insteadOf "https://git.hicron.com/"
+    script:
+        - abaplint abaplint.json --outformat junit --outfile report_all.xml
+    artifacts:
+        reports:
+            junit: report_all.xml
+unit:
+    image: node:16
+    stage: test
+    variables:
+        http_proxy: http://10.5.1.1:8080
+        https_proxy: http://10.5.1.1:8080
+
+    before_script:
+        - npm install   
+        - id && ls -la && pwd
+        - chmod +x node_modules/.bin/abap_transpile
+        - git config --global url."https://KSEF:${CI_JOB_TOKEN}@git.hicron.com/".insteadOf "https://git.hicron.com/"
+    script:
+        - npm run unit
+    artifacts:
+        reports:
+            junit: report_unit.xml
